@@ -44,11 +44,11 @@ public class ClientServiceMain implements IClientServiceConstants {
 			//3.Æô¶¯·þÎñ
 			if(http_service_switch){
 				HttpClientService hcs=new HttpClientService();
-				hcs.serviceStart();
+				hcs.serviceStart(http_service_port);
 			}
 			if(tcp_service_switch){
 				TcpClientService tcs=new TcpClientService();
-				tcs.serviceStart();
+				tcs.serviceStart(tcp_service_port);
 			}
 		}
 	}
