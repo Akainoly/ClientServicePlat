@@ -1,10 +1,10 @@
-package cn.com.atech.csp.service.http;
+package cn.com.atech.csp.service;
 
 import java.io.IOException;
 
 import cn.com.atech.csp.service.DataChannel;
 
-public interface IMessageAdapter {
+public interface IMessageSender {
 	// 准备发送的内容
 	public void prepare() throws IOException;
 

@@ -1,8 +1,13 @@
 package cn.com.atech.csp.service.http;
 
-import java.io.*;
-import java.nio.*;
-import java.nio.charset.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
+import cn.com.atech.csp.service.DataChannel;
 
 /* 字符串形式的内容 */
 public class StringContent implements Content {

@@ -6,6 +6,8 @@ import java.io.RandomAccessFile;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 
+import cn.com.atech.csp.service.DataChannel;
+
 /*文件形式的响应正文*/
 public class FileContent implements Content {
   //假定文件的根目录为"root"

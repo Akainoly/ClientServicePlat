@@ -1,11 +1,18 @@
-package cn.com.atech.csp.service.http;
+package cn.com.atech.csp.service;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 
 public class AccessAdapter implements IPipeLineWorker {
+	
+	private static Charset charset=null;
+	
+	public AccessAdapter(Charset charset) {
+		this.charset=charset;
+	}
 
 	@Override
 	public void work(SelectionKey key) throws IOException {
@@ -17,7 +24,7 @@ public class AccessAdapter implements IPipeLineWorker {
 				 ":" + socketChannel.socket().getPort());
 
 		 DataChannel dc =new DataChannel(socketChannel, false/*·Ç×èÈûÄ£Ê½*/);
-		 MessageExchanger mer = new MessageExchanger(dc);
+		 MessageExchanger mer = new MessageExchanger(dc,charset);
 		 socketChannel.register(key.selector(), SelectionKey.OP_READ, mer);
 	}
 

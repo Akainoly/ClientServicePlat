@@ -1,9 +1,11 @@
 package cn.com.atech.csp.service.http;
 
+import cn.com.atech.csp.service.IMessageSender;
+
 /**
  * 表示服务器发送给客户的正文内容
  */
-public interface Content extends IMessageAdapter {
+public interface Content extends IMessageSender {
   //内容的类型
   String type();
 

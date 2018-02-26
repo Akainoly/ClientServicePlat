@@ -1,19 +1,31 @@
-package cn.com.atech.csp.service.http;
+package cn.com.atech.csp.service;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 
-public class HttpServer {
+import cn.com.atech.csp.constants.IClientServiceConstants;
+
+public class MainServer {
 
 	private Selector selector = null;
 	private ServerSocketChannel serverSocketChannel = null;
-	
-	public HttpServer(int port) throws IOException {
+	private static Charset charset=null;
+
+	public MainServer(int port,String charsetName) throws IOException {
+		try {
+			charset = Charset.forName(charsetName);
+		} catch (IllegalArgumentException e) {
+			System.out.println("×Ö·û±àÂëÅäÖÃ´íÎó£º" + charsetName 
+					+ " £¬½«Ê¹ÓÃÄ¬ÈÏ×Ö·û±àÂë£º" + IClientServiceConstants.DEFAULT_CHARSET);
+			charset = Charset.forName(IClientServiceConstants.DEFAULT_CHARSET);
+			e.printStackTrace();
+		}
 		selector = Selector.open();
 		serverSocketChannel = ServerSocketChannel.open();
 		serverSocketChannel.socket().setReuseAddress(true);
@@ -23,7 +35,7 @@ public class HttpServer {
 	}
 
 	public void service() throws IOException {
-		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, new AccessAdapter());
+		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, new AccessAdapter(charset));
 		for (;;) {
 			int n = selector.select();
 			if (n == 0)
@@ -42,19 +54,19 @@ public class HttpServer {
 					try {
 						if (key != null) {
 							key.cancel();
-							key.channel().close();
+//							key.channel().close();
 						}
 					} catch (Exception ex) {
 						e.printStackTrace();
 					}
 				}
-			} 
-		} 
+			}
+		}
 	}
-	
-	public static void main(String args[])throws Exception{
-	    final HttpServer server = new HttpServer(80);
-	    server.service();
+
+	public static void main(String args[]) throws Exception {
+		final MainServer server = new MainServer(80,"GBK");
+		server.service();
 	}
-	
+
 }

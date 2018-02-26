@@ -1,27 +1,27 @@
 package cn.com.atech.csp.service.http;
 
-import java.io.*;
-import java.nio.*;
-import java.nio.charset.*;
+import java.io.IOException;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 import cn.com.atech.csp.constants.IClientServiceConstants;
+import cn.com.atech.csp.service.AbstractResponse;
+import cn.com.atech.csp.service.DataChannel;
 
-public class Response implements IMessageAdapter {
+public class HttpResponse extends AbstractResponse {
 
   private ResponseCode code;  //状态代码
   private Content content;  //响应正文
   private boolean headersOnly;  //表示HTTP响应中是否仅包含响应头
   private ByteBuffer headerBuffer = null;  //响应头
   
-  public Response(Content c) {
-	  
-  }
-
-  public Response(ResponseCode rc, Content c) {
+  public HttpResponse(ResponseCode rc, Content c) {
     this(rc, c, null);
   }
 
-  public Response(ResponseCode rc, Content c, String head) {
+  public HttpResponse(ResponseCode rc, Content c, String head) {
     code = rc;
     content = c;
     headersOnly = (head!=null && head.equalsIgnoreCase(IClientServiceConstants.HEAD));
@@ -82,4 +82,5 @@ public class Response implements IMessageAdapter {
   public void release() throws IOException {
     content.release();
   }
+
 }
