@@ -46,6 +46,7 @@ public class HttpRequest extends AbstractRequest {
 			e.printStackTrace();
 			return false;
 		}
+		this.setMessageType(MESSAGE_TYPE_JSON);
 		return true;
 	}
 

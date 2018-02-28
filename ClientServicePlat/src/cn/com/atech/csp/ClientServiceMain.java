@@ -2,6 +2,10 @@ package cn.com.atech.csp;
 
 import java.io.IOException;
 
+import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.com.atech.csp.auth.AuthModule;
 import cn.com.atech.csp.constants.IClientServiceConstants;
 import cn.com.atech.csp.service.MainServer;
@@ -26,10 +30,16 @@ public class ClientServiceMain implements IClientServiceConstants {
 	
 	private static ClientServiceMain csmImpl=null;
 	
-	private ClientServiceMain() {
+	final Logger logger = LoggerFactory.getLogger(ClientServiceMain.class);
+	
+	static {
+		PropertyConfigurator.configure("./configuration/log4j.properties");
+	}
+	
+	private void start() {
 		//1.检查主服务授权
 		boolean authState=AuthModule.checkMainAuthInfo();
-		if(authState) {
+		if(!authState) {
 			//2.授权成功，加载配置
 			initConfiguration();
 			//3.启动服务
@@ -41,7 +51,7 @@ public class ClientServiceMain implements IClientServiceConstants {
 						server.service();
 					} catch (IOException e) {
 						e.printStackTrace();
-						System.out.println("CSP主服务启动异常："+e.getMessage());
+						logger.error("CSP主服务启动异常："+e.getMessage(), e);
 					}
 				}
 			}.start();
@@ -61,12 +71,13 @@ public class ClientServiceMain implements IClientServiceConstants {
 	private void initConfiguration(){
 		service_port=(int) ReadPropTool.getParamValue(MAIN_PROPERTIES, "http_service_port", 5564);
 		service_charset=(String) ReadPropTool.getParamValue(MAIN_PROPERTIES, "http_service_port", "GBK");
-		System.out.println("初始化参数配置： service_port="+service_port
+		logger.info("初始化参数配置： service_port="+service_port
 				+" | service_charset="+service_charset);
 	}
 	
 	public static void main(String[] args) {
-		
+		ClientServiceMain csm=ClientServiceMain.getInstance();
+		csm.start();
 	}
 	
 }

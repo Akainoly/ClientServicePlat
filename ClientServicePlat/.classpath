@@ -2,6 +2,11 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ClientServicePlatTools"/>
+	<classpathentry kind="lib" path="lib/thirdParty/dom4j-2.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/thirdParty/fastjson-1.2.43.jar"/>
+	<classpathentry kind="lib" path="lib/csp_tools.jar"/>
+	<classpathentry kind="lib" path="lib/thirdParty/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/thirdParty/slf4j-log4j12-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/thirdParty/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

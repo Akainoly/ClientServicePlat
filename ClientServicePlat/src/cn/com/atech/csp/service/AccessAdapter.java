@@ -6,9 +6,14 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AccessAdapter implements IPipeLineWorker {
 	
-	private static Charset charset=null;
+	private Charset charset=null;
+	
+	final Logger logger = LoggerFactory.getLogger(AccessAdapter.class);
 	
 	public AccessAdapter(Charset charset) {
 		this.charset=charset;
@@ -19,7 +24,7 @@ public class AccessAdapter implements IPipeLineWorker {
 		 ServerSocketChannel serverSocketChannel=(ServerSocketChannel)key.channel();
 		 SocketChannel socketChannel = serverSocketChannel.accept();
 		 if (socketChannel== null)return;
-		 System.out.println("接收到客户连接，来自:" +
+		 logger.info("接收到客户连接，来自:" +
 				 socketChannel.socket().getInetAddress() +
 				 ":" + socketChannel.socket().getPort());
 

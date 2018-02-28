@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,79 @@ import org.apache.http.message.BasicNameValuePair;
 public class HttpClientHelper {  
 	
 	public static void main(String[] args) {
-		HttpClientHelper.sendPost("http://127.0.0.1/", null, "gbk");
+//		String res=HttpClientHelper.sendGet("http://127.0.0.1:80/test.txt", null, "gbk");
+		Map map=new HashMap();
+		map.put("method", "check");
+		map.put("param1", "a");
+		map.put("param2", "b");
+		String json="{\"APP_HEAD\":{\"Method\":\"record\"},\"SYS_HEAD\":{\"ConsumerId\":\"030107\",\"TransServiceCode\":\"test002\",\"RequestDate\":\"20170427\",\"RequestTime\":\"111121\",\"ConsumerSeqNo\":\"GSUTE201704270000000000003045772\",\"ConsumerIP\":\"132.2.58.214\",\"ServerIP\":\"192.9.200.131\",\"TranMode\":\"1\",\"MacValue\":\"70:1C:E7:28:C9:40\",\"Reserve\":\"\"},\"REQ_BODY\":{	\"idType\":\"B01\",\"idNo\":\"320583198611011016\",				\"cellphoneNo\":\"\"}}";
+		String res=HttpClientHelper.sendPost3("http://127.0.0.1:5564", json, "gbk");
+		System.out.println(res);
 	}
+	
+	 public static String sendPost3(String urlParam, String params, String charset) {  
+	        StringBuffer resultBuffer = null;  
+	        // 构建请求参数  
+	        HttpURLConnection con = null;  
+	        OutputStreamWriter osw = null;  
+	        BufferedReader br = null;  
+	        // 发送请求  
+	        try {  
+	            URL url = new URL(urlParam);  
+	            con = (HttpURLConnection) url.openConnection();  
+	            con.setRequestMethod("POST");  
+	            con.setDoOutput(true);  
+	            con.setDoInput(true);  
+	            con.setUseCaches(false);  
+	            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  
+	            if (params != null && params.length() > 0) {  
+	                osw = new OutputStreamWriter(con.getOutputStream(), charset);  
+	                osw.write(params);  
+	                osw.flush();  
+	            }  
+	            // 读取返回内容  
+	            resultBuffer = new StringBuffer();  
+	            int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));  
+	            if (contentLength > 0) {  
+	                br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));  
+	                String temp;  
+	                while ((temp = br.readLine()) != null) {  
+	                    resultBuffer.append(temp);  
+	                }  
+	            }  
+	        } catch (Exception e) {  
+	            throw new RuntimeException(e);  
+	        } finally {  
+	            if (osw != null) {  
+	                try {  
+	                    osw.close();  
+	                } catch (IOException e) {  
+	                    osw = null;  
+	                    throw new RuntimeException(e);  
+	                } finally {  
+	                    if (con != null) {  
+	                        con.disconnect();  
+	                        con = null;  
+	                    }  
+	                }  
+	            }  
+	            if (br != null) {  
+	                try {  
+	                    br.close();  
+	                } catch (IOException e) {  
+	                    br = null;  
+	                    throw new RuntimeException(e);  
+	                } finally {  
+	                    if (con != null) {  
+	                        con.disconnect();  
+	                        con = null;  
+	                    }  
+	                }  
+	            }  
+	        }  
+
+	        return resultBuffer.toString();  
+	    }  
 	
     /** 
      * @Description:使用HttpURLConnection发送post请求 

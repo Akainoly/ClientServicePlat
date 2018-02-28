@@ -9,6 +9,9 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cn.com.atech.csp.constants.IClientServiceConstants;
 
 public class MainServer {
@@ -16,22 +19,23 @@ public class MainServer {
 	private Selector selector = null;
 	private ServerSocketChannel serverSocketChannel = null;
 	private static Charset charset=null;
-
+	final Logger logger = LoggerFactory.getLogger(MainServer.class);
+	
 	public MainServer(int port,String charsetName) throws IOException {
 		try {
 			charset = Charset.forName(charsetName);
 		} catch (IllegalArgumentException e) {
-			System.out.println("字符编码配置错误：" + charsetName 
-					+ " ，将使用默认字符编码：" + IClientServiceConstants.DEFAULT_CHARSET);
-			charset = Charset.forName(IClientServiceConstants.DEFAULT_CHARSET);
 			e.printStackTrace();
+			charset = Charset.forName(IClientServiceConstants.DEFAULT_CHARSET);
+			logger.error("字符编码配置错误：" + charsetName 
+					+ " ，将使用默认字符编码：" + IClientServiceConstants.DEFAULT_CHARSET, e);
 		}
 		selector = Selector.open();
 		serverSocketChannel = ServerSocketChannel.open();
 		serverSocketChannel.socket().setReuseAddress(true);
 		serverSocketChannel.configureBlocking(false);
 		serverSocketChannel.socket().bind(new InetSocketAddress(port));
-		System.out.println("HTTP服务准备完成...");
+		logger.info("HTTP服务准备完成...");
 	}
 
 	public void service() throws IOException {

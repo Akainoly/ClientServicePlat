@@ -7,7 +7,12 @@ import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.com.atech.csp.service.http.FileContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.com.atech.csp.invoke.AbstractMessageTranslator;
+import cn.com.atech.csp.invoke.JsonTranslator;
+import cn.com.atech.csp.invoke.XmlTranslator;
 import cn.com.atech.csp.service.http.HttpRequest;
 import cn.com.atech.csp.service.http.HttpResponse;
 import cn.com.atech.csp.service.http.ResponseCode;
@@ -25,6 +30,8 @@ public class MessageExchanger implements IPipeLineWorker {
 	private AbstractRequest request=null;
 	
 	private AbstractResponse response=null;
+	
+	final Logger logger = LoggerFactory.getLogger(MessageExchanger.class);
 	
 	public MessageExchanger(DataChannel dc, Charset charset) {
 		this.dc = dc;
@@ -46,10 +53,15 @@ public class MessageExchanger implements IPipeLineWorker {
 				request=parseRequset();
 				
 				if(request!=null) {
-					if(request instanceof HttpRequest) {
-						response = new HttpResponse(ResponseCode.OK,
-			                      new FileContent(((HttpRequest) request).getUri()));
+					logger.info("ÇëÇóÊý¾Ý£º"+request.getMessage());
+					AbstractMessageTranslator msgTranslator=null;
+					if(request.getMessageType().equals(MESSAGE_TYPE_XML)) {
+						msgTranslator=new XmlTranslator();
+					}else if(request.getMessageType().equals(MESSAGE_TYPE_JSON)) {
+						msgTranslator=new JsonTranslator();
 					}
+					String respData=msgTranslator.translate(request);
+					response = new HttpResponse(ResponseCode.OK, new StringContent(respData));
 				}
 
 				try {

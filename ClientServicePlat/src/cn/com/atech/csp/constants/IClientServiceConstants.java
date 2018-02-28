@@ -37,4 +37,13 @@ public interface IClientServiceConstants {
 	 */
 	public static final String POST="POST";
 	
+	/**
+	 * 报文格式xml
+	 */
+	public static final String MESSAGE_TYPE_XML="MESSAGE_TYPE_XML";
+	
+	/**
+	 * 报文格式json
+	 */
+	public static final String MESSAGE_TYPE_JSON="MESSAGE_TYPE_JSON";
 }

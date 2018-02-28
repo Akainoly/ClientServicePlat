@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/httpClient/httpmime-4.5.5.jar"/>
 	<classpathentry kind="lib" path="lib/httpClient/jna-4.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/httpClient/jna-platform-4.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/fastjson-1.2.43.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
