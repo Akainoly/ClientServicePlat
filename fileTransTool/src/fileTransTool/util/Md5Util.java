@@ -1,6 +1,5 @@
 package fileTransTool.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,50 +18,34 @@ public class Md5Util {
 	 * 
 	 * @param file
 	 * @return MD5值的String
+	 * @throws Exception 
 	 */
-	public static String getMD5(File file) {
-		if(!file.exists()){
-			return "";
-		}
-		ByteArrayOutputStream baos = null;
-		InputStream is = null;
-		byte[] result = null;
-		String md5String = "";
+	public static String getMD5(File f) throws Exception {
+		String hashType = "MD5";
+		InputStream ins=null;
 		try {
-			baos = new ByteArrayOutputStream();
-			is = new FileInputStream(file);
-			byte[] buff = new byte[2048];
-			int length = 0;
-			while ((length = is.read(buff)) > 0) {
-				baos.write(buff, 0, length);
+			ins = new FileInputStream(f);
+			byte[] buffer = new byte[8192];
+			MessageDigest md5 = MessageDigest.getInstance(hashType);
+			int len;
+			while ((len = ins.read(buffer)) != -1) {
+				md5.update(buffer, 0, len);
 			}
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			result = md.digest(baos.toByteArray());
-			if (result != null) {
-				md5String = new String(Base64.encodeBase64(result));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("",e);
-		} finally {
-			if (is != null) {
+			return new String(Base64.encodeBase64(md5.digest()));
+		}catch (Exception e) {
+			logger.error(f.getAbsolutePath()+"获取文件md5值失败:"+e.getMessage(),e);
+			throw e;
+		}finally {
+			if(ins!=null) {
 				try {
-					is.close();
+					ins.close();
 				} catch (IOException e) {
-					e.printStackTrace();
-					logger.error("",e);
-				}
-			}
-			if (baos != null) {
-				try {
-					baos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					logger.error("",e);
+					ins=null;
 				}
 			}
 		}
-		return md5String;
 	}
-	
+	public static void main(String[] args) throws Exception {
+		System.out.println(Md5Util.getMD5(new File("./dasda.sas")));
+	}
 }

@@ -12,7 +12,6 @@ import fileTransTool.base.CommKeys;
 import fileTransTool.handler.FileTransfer;
 import fileTransTool.util.Md5Util;
 import fileTransTool.util.SM3Util;
-import sun.rmi.runtime.Log;
 
 public class FileTransTool {
 	
@@ -118,11 +117,11 @@ public class FileTransTool {
 	 */
 	public static String getLocalFileMd5(String filePath) throws Exception{
 		File file=new File(filePath);
-		if(file.exists() && file.isFile()){
-			return Md5Util.getMD5(file);
+		if(!file.exists() || !file.isFile()){
+			throw new FileNotFoundException("传入的文件路径不存在" +
+					"或路径有误:"+filePath);
 		}
-		throw new FileNotFoundException("传入的文件路径不存在" +
-				"或路径有误:"+filePath);
+		return Md5Util.getMD5(file);
 	}
 	
 	/**
@@ -141,6 +140,7 @@ public class FileTransTool {
 			dataMap.put(CommKeys.FILE_CHECK_METHOD, "md5");
 			flagVal=FileTransfer.getServerFileFlag(ip, port, server_file, dataMap);
 		}catch (Exception e) {
+			logger.error(server_file+" | 获取服务端文件md5异常："+e.getMessage(), e);
 		}
 		return flagVal;
 	}
@@ -238,13 +238,13 @@ public class FileTransTool {
 				if(dataMap.get(CommKeys.FILE_CHECK_METHOD)!=null
 						&& ((String)dataMap.get(CommKeys.FILE_CHECK_METHOD)).equals("sm3")){
 					if(getLocalFileSM3(localFilePath).equals(getServerFileSM3(ip, port, remoteFilePath, dataMap))){
-						logger.error("文件校验一致...");
+						logger.debug("文件校验一致...");
 						return res;
 					}
 				}else if(dataMap.get(CommKeys.FILE_CHECK_METHOD)==null
 						|| ((String)dataMap.get(CommKeys.FILE_CHECK_METHOD)).equals("md5")){
-					logger.error("文件校验一致...");
 					if(getLocalFileMd5(localFilePath).equals(getServerFileMd5(ip, port, remoteFilePath, dataMap))){
+						logger.debug("文件校验一致...");
 						return res;
 					}
 				}
